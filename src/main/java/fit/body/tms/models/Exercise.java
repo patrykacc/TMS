@@ -1,5 +1,7 @@
 package fit.body.tms.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
@@ -10,21 +12,26 @@ public class Exercise {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String name;
-    private Integer numberOfRepetitions;
+    private Integer repetitions;
+    private Integer series;
+    private Double weight;
+
+    @NotNull
+    @JsonBackReference
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "training_id")
+    private Training training;
 
     @Override
     public String toString() {
         return "Exercise{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", numberOfRepetitions=" + numberOfRepetitions +
-                ", training=" + training +
+                ", repetitions=" + repetitions +
+                ", series=" + series +
+                ", weight=" + weight +
                 '}';
     }
-
-    @ManyToOne
-    @NotNull
-    private Training training;
 
     public Long getId() {
         return id;
@@ -42,12 +49,28 @@ public class Exercise {
         this.name = name;
     }
 
-    public Integer getNumberOfRepetitions() {
-        return numberOfRepetitions;
+    public Integer getRepetitions() {
+        return repetitions;
     }
 
-    public void setNumberOfRepetitions(Integer numberOfRepetitions) {
-        this.numberOfRepetitions = numberOfRepetitions;
+    public void setRepetitions(Integer repetitions) {
+        this.repetitions = repetitions;
+    }
+
+    public Integer getSeries() {
+        return series;
+    }
+
+    public void setSeries(Integer series) {
+        this.series = series;
+    }
+
+    public Double getWeight() {
+        return weight;
+    }
+
+    public void setWeight(Double weight) {
+        this.weight = weight;
     }
 
     public Training getTraining() {

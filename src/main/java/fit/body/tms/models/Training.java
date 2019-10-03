@@ -1,22 +1,42 @@
 package fit.body.tms.models;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import fit.body.tms.repositories.PrePersistListener;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Arrays;
+import java.util.List;
 
 @Entity
+@EntityListeners(PrePersistListener.class)
 public class Training {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private Integer duration;
-    private LocalDateTime startTime;
-    private LocalDateTime endTime;
 
-    @OrderColumn
-    @OneToMany
-    private Exercise[] exercises;
+    private Integer duration;
+
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm")
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    private LocalDateTime startTime;
+
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
+
+    @JsonManagedReference
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "training")
+    private List<Exercise> exercises;
+
+    public Training() {
+    }
 
     public Long getId() {
         return id;
@@ -34,11 +54,11 @@ public class Training {
         this.duration = duration;
     }
 
-    public Exercise[] getExercises() {
+    public List<Exercise> getExercises() {
         return exercises;
     }
 
-    public void setExercises(Exercise[] exercises) {
+    public void setExercises(List<Exercise> exercises) {
         this.exercises = exercises;
     }
 
@@ -48,8 +68,6 @@ public class Training {
                 "id=" + id +
                 ", duration=" + duration +
                 ", startTime=" + startTime +
-                ", endTime=" + endTime +
-                ", exercises=" + Arrays.toString(exercises) +
                 '}';
     }
 }
